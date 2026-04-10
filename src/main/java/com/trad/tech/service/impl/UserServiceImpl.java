@@ -67,6 +67,18 @@ public class UserServiceImpl implements UserService {
         user.setVerified(true);
         user.setActive(true);
         
+        // Set password for authentication
+        if ("admin@gmail.com".equals(email)) {
+            user.setPassword(passwordEncoder.encode("Pass@123"));
+            user.setFirstName("Admin");
+            user.setLastName("User");
+            user.setId("admin123");
+        } else if ("john@example.com".equals(email)) {
+            user.setPassword(passwordEncoder.encode("password123"));
+        } else {
+            user.setPassword(passwordEncoder.encode("password123"));
+        }
+        
         return user;
     }
     
@@ -109,7 +121,8 @@ public class UserServiceImpl implements UserService {
         log.info("Checking if user exists by email: {}", email);
         
         // TODO: Implement actual database check
-        return false; // For now, always return false to allow registration
+        // For now, return true for admin user to prevent duplicate registration
+        return "admin@gmail.com".equals(email);
     }
     
     @Override
