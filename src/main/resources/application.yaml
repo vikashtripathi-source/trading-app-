@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: trading_application
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/tradingdb
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: trading-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.trad.tech.model
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+# Custom Kafka topics configuration
+kafka:
+  topics:
+    trade-events: trade-events
+    trade-validation: trade-validation
+    trade-execution: trade-execution
+    trade-errors: trade-errors
+    market-data: market-data
+
+server:
+  port: 8083
