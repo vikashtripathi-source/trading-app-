@@ -1,69 +1,64 @@
 package com.trad.tech.service.impl;
 
 import com.trad.tech.model.Portfolio;
+import com.trad.tech.repository.PortfolioRepository;
 import com.trad.tech.service.PortfolioService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class PortfolioServiceImpl implements PortfolioService {
     
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PortfolioServiceImpl.class);
+    private final PortfolioRepository portfolioRepository;
     
     @Override
     public Portfolio getUserPortfolio(String userId) {
         log.info("Getting portfolio for user: {}", userId);
         
-        // TODO: Implement actual portfolio retrieval from database
-        Portfolio portfolio = new Portfolio();
-        portfolio.setUserId(userId);
-        portfolio.setTotalValue(50000.0);
-        portfolio.setTotalGain(2500.0);
-        portfolio.setTotalGainPercent(5.25);
-        
-        List<Portfolio.Holding> holdings = new ArrayList<>();
-        
-        // Sample holdings
-        Portfolio.Holding holding1 = new Portfolio.Holding();
-        holding1.setSymbol("AAPL");
-        holding1.setQuantity(100);
-        holding1.setAvgCost(150.0);
-        holding1.setCurrentPrice(175.0);
-        holding1.setMarketValue(17500.0);
-        holding1.setGain(2500.0);
-        holding1.setGainPercent(16.67);
-        holdings.add(holding1);
-        
-        Portfolio.Holding holding2 = new Portfolio.Holding();
-        holding2.setSymbol("GOOGL");
-        holding2.setQuantity(50);
-        holding2.setAvgCost(2500.0);
-        holding2.setCurrentPrice(2800.0);
-        holding2.setMarketValue(140000.0);
-        holding2.setGain(15000.0);
-        holding2.setGainPercent(12.0);
-        holdings.add(holding2);
-        
-        portfolio.setHoldings(holdings);
-        
-        return portfolio;
+        return portfolioRepository.findByUserId(userId)
+                .orElseGet(() -> {
+                    // Create default portfolio if not exists
+                    Portfolio portfolio = new Portfolio();
+                    portfolio.setUserId(userId);
+                    portfolio.setName("Main Portfolio");
+                    portfolio.setTotalValue(0.0);
+                    portfolio.setAvailableBalance(10000.0);
+                    portfolio.setTotalInvested(0.0);
+                    portfolio.setTotalPnL(0.0);
+                    portfolio.setDailyPnL(0.0);
+                    portfolio.setHoldings(new ArrayList<>());
+                    portfolio.setLastUpdated(System.currentTimeMillis());
+                    
+                    return portfolioRepository.save(portfolio);
+                });
     }
     
     @Override
     public Portfolio updatePortfolio(String userId, Portfolio portfolio) {
         log.info("Updating portfolio for user: {}", userId);
         
-        // TODO: Implement actual portfolio update in database
-        portfolio.setUserId(userId);
-        portfolio.setLastUpdated(System.currentTimeMillis());
+        Portfolio existingPortfolio = getUserPortfolio(userId);
         
-        return portfolio;
+        // Update fields
+        existingPortfolio.setName(portfolio.getName());
+        existingPortfolio.setTotalValue(portfolio.getTotalValue());
+        existingPortfolio.setAvailableBalance(portfolio.getAvailableBalance());
+        existingPortfolio.setTotalInvested(portfolio.getTotalInvested());
+        existingPortfolio.setTotalPnL(portfolio.getTotalPnL());
+        existingPortfolio.setDailyPnL(portfolio.getDailyPnL());
+        existingPortfolio.setHoldings(portfolio.getHoldings());
+        existingPortfolio.setLastUpdated(System.currentTimeMillis());
+        
+        return portfolioRepository.save(existingPortfolio);
     }
     
     @Override

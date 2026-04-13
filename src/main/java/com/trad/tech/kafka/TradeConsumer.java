@@ -16,7 +16,6 @@ public class TradeConsumer {
         try {
             if (trade != null) {
                 logger.info("Consumed Trade Event: {}", trade);
-                // Process trade event (e.g., update analytics, send notifications, etc.)
             } else {
                 logger.warn("Received null trade event message");
             }
@@ -45,7 +44,6 @@ public class TradeConsumer {
         try {
             if (trade != null) {
                 logger.info("Consumed Trade Execution: {}", trade);
-                // Process trade execution logic
                 executeTrade(trade);
             } else {
                 logger.warn("Received null trade execution message");

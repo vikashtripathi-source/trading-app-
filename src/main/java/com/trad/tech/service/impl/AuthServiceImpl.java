@@ -49,7 +49,9 @@ public class AuthServiceImpl implements AuthService {
                 new UsernamePasswordAuthenticationToken(email, password)
             );
             
-            User user = (User) authentication.getPrincipal();
+            // Get the email from authentication and find the user from database
+            String userEmail = authentication.getName();
+            User user = userService.findByEmail(userEmail);
             return generateToken(user);
             
         } catch (AuthenticationException e) {

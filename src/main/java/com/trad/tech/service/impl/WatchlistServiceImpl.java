@@ -1,61 +1,69 @@
 package com.trad.tech.service.impl;
 
 import com.trad.tech.model.Watchlist;
+import com.trad.tech.repository.WatchlistRepository;
 import com.trad.tech.service.WatchlistService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class WatchlistServiceImpl implements WatchlistService {
     
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(WatchlistServiceImpl.class);
+    private final WatchlistRepository watchlistRepository;
     
     @Override
     public List<Watchlist> getUserWatchlists(String userId) {
         log.info("Getting watchlists for user: {}", userId);
         
-        // TODO: Implement actual database query
-        // For now, return empty list
-        return List.of();
+        return watchlistRepository.findByUserIdOrderByCreatedDateDesc(userId);
     }
     
     @Override
     public Watchlist createWatchlist(Watchlist watchlist) {
         log.info("Creating new watchlist: {}", watchlist);
         
-        // TODO: Implement actual database creation
-        // For now, return the watchlist as-is (controller should set the fields)
-        return watchlist;
+        // Set creation date and ID if not set
+        if (watchlist.getId() == null) {
+            watchlist.setId(UUID.randomUUID().toString());
+        }
+        if (watchlist.getCreatedDate() == null) {
+            watchlist.setCreatedDate(LocalDateTime.now());
+        }
+        if (watchlist.getLastUpdated() == null) {
+            watchlist.setLastUpdated(LocalDateTime.now());
+        }
+        
+        return watchlistRepository.save(watchlist);
     }
     
     @Override
     public Watchlist getWatchlistById(String id) {
         log.info("Getting watchlist by ID: {}", id);
         
-        // TODO: Implement actual database retrieval
-        // For now, return mock watchlist
-        Watchlist watchlist = new Watchlist();
-        watchlist.setId(id);
-        watchlist.setUserId("user123");
-        watchlist.setName("My Watchlist");
-        watchlist.setSymbols(List.of("AAPL", "GOOGL", "MSFT"));
-        watchlist.setCreatedDate(java.time.LocalDateTime.now().minusDays(7));
-        watchlist.setLastUpdated(java.time.LocalDateTime.now());
-        watchlist.setDefault(true);
-        
-        return watchlist;
+        return watchlistRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Watchlist not found with ID: " + id));
     }
     
     @Override
     public Watchlist addSymbolToWatchlist(String id, String symbol) {
         log.info("Adding symbol {} to watchlist: {}", symbol, id);
         
-        // TODO: Implement actual database update
-        // For now, return mock watchlist
         Watchlist watchlist = getWatchlistById(id);
-        watchlist.getSymbols().add(symbol);
-        watchlist.setLastUpdated(java.time.LocalDateTime.now());
+        
+        // Add symbol if not already present
+        if (!watchlist.getSymbols().contains(symbol)) {
+            watchlist.getSymbols().add(symbol);
+            watchlist.setLastUpdated(LocalDateTime.now());
+            
+            return watchlistRepository.save(watchlist);
+        }
         
         return watchlist;
     }
@@ -64,12 +72,14 @@ public class WatchlistServiceImpl implements WatchlistService {
     public Watchlist removeSymbolFromWatchlist(String id, String symbol) {
         log.info("Removing symbol {} from watchlist: {}", symbol, id);
         
-        // TODO: Implement actual database update
-        // For now, return mock watchlist
         Watchlist watchlist = getWatchlistById(id);
-        watchlist.getSymbols().remove(symbol);
-        watchlist.setLastUpdated(java.time.LocalDateTime.now());
         
+        // Remove symbol if present
+        if (watchlist.getSymbols().remove(symbol)) {
+            watchlist.setLastUpdated(LocalDateTime.now());
+            
+            return watchlistRepository.save(watchlist);
+        }
         return watchlist;
     }
     
@@ -77,6 +87,6 @@ public class WatchlistServiceImpl implements WatchlistService {
     public void deleteWatchlist(String id) {
         log.info("Deleting watchlist: {}", id);
         
-        // TODO: Implement actual database deletion
+        watchlistRepository.deleteById(id);
     }
 }

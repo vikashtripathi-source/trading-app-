@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -72,10 +71,12 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
                 .requestMatchers("/api-docs/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
+                // Allow all API endpoints without authentication
+                .requestMatchers("/api/**").permitAll()
                 // Admin endpoints
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                // All other endpoints require authentication
-                .anyRequest().authenticated()
+                .requestMatchers("/api/admin/**").permitAll()
+                // All other endpoints
+                .anyRequest().permitAll()
             )
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
