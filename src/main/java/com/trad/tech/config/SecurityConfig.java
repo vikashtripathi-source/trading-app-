@@ -2,6 +2,8 @@ package com.trad.tech.config;
 
 import com.trad.tech.service.AuthService;
 import com.trad.tech.service.UserService;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,84 +20,86 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-import java.util.List;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    private UserService userService;
-    private AuthService authService;
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-    private PasswordEncoder passwordEncoder;
-    private AuthenticationProvider authenticationProvider;
+  private UserService userService;
+  private AuthService authService;
+  private JwtAuthenticationFilter jwtAuthenticationFilter;
+  private PasswordEncoder passwordEncoder;
+  private AuthenticationProvider authenticationProvider;
 
-    @Autowired
-    @Lazy
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
+  @Autowired
+  @Lazy
+  public void setUserService(UserService userService) {
+    this.userService = userService;
+  }
 
-    @Autowired
-    @Lazy
-    public void setAuthService(AuthService authService) {
-        this.authService = authService;
-    }
+  @Autowired
+  @Lazy
+  public void setAuthService(AuthService authService) {
+    this.authService = authService;
+  }
 
-    @Autowired
-    @Lazy
-    public void setJwtAuthenticationFilter(JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    }
+  @Autowired
+  @Lazy
+  public void setJwtAuthenticationFilter(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+  }
 
-    @Autowired
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
+  @Autowired
+  public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+    this.passwordEncoder = passwordEncoder;
+  }
 
-    @Autowired
-    public void setAuthenticationProvider(AuthenticationProvider authenticationProvider) {
-        this.authenticationProvider = authenticationProvider;
-    }
+  @Autowired
+  public void setAuthenticationProvider(AuthenticationProvider authenticationProvider) {
+    this.authenticationProvider = authenticationProvider;
+  }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                // Public endpoints
-                .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
-                .requestMatchers("/api-docs/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers("/actuator/health").permitAll()
-                // Allow all API endpoints without authentication
-                .requestMatchers("/api/**").permitAll()
-                // Admin endpoints
-                .requestMatchers("/api/admin/**").permitAll()
-                // All other endpoints
-                .anyRequest().permitAll()
-            )
-            .authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .csrf(csrf -> csrf.disable())
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(
+            auth ->
+                auth
+                    // Public endpoints
+                    .requestMatchers("/api/auth/register", "/api/auth/login")
+                    .permitAll()
+                    .requestMatchers("/api-docs/**", "/swagger-ui/**", "/v3/api-docs/**")
+                    .permitAll()
+                    .requestMatchers("/actuator/health")
+                    .permitAll()
+                    // Allow all API endpoints without authentication
+                    .requestMatchers("/api/**")
+                    .permitAll()
+                    // Admin endpoints
+                    .requestMatchers("/api/admin/**")
+                    .permitAll()
+                    // All other endpoints
+                    .anyRequest()
+                    .permitAll())
+        .authenticationProvider(authenticationProvider)
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+    return http.build();
+  }
 
-    
-    
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
-        
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOriginPatterns(List.of("*"));
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowedHeaders(List.of("*"));
+    configuration.setAllowCredentials(true);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+  }
 }

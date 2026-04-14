@@ -9,36 +9,36 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TradeProducer {
-    
-    private static final Logger logger = LoggerFactory.getLogger(TradeProducer.class);
-    
-    private final KafkaTemplate<String, Trade> kafkaTemplate;
-    
-    @Value("${kafka.topics.trade-events}")
-    private String tradeEventsTopic;
-    
-    @Value("${kafka.topics.trade-validation}")
-    private String tradeValidationTopic;
-    
-    public TradeProducer(KafkaTemplate<String, Trade> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
+
+  private static final Logger logger = LoggerFactory.getLogger(TradeProducer.class);
+
+  private final KafkaTemplate<String, Trade> kafkaTemplate;
+
+  @Value("${kafka.topics.trade-events}")
+  private String tradeEventsTopic;
+
+  @Value("${kafka.topics.trade-validation}")
+  private String tradeValidationTopic;
+
+  public TradeProducer(KafkaTemplate<String, Trade> kafkaTemplate) {
+    this.kafkaTemplate = kafkaTemplate;
+  }
+
+  public void sendTrade(Trade trade) {
+    try {
+      kafkaTemplate.send(tradeEventsTopic, trade);
+      logger.info("Trade event sent: {}", trade);
+    } catch (Exception e) {
+      logger.error("Error sending trade event: {}", e.getMessage(), e);
     }
-    
-    public void sendTrade(Trade trade) {
-        try {
-            kafkaTemplate.send(tradeEventsTopic, trade);
-            logger.info("Trade event sent: {}", trade);
-        } catch (Exception e) {
-            logger.error("Error sending trade event: {}", e.getMessage(), e);
-        }
+  }
+
+  public void sendTradeValidation(Trade trade) {
+    try {
+      kafkaTemplate.send(tradeValidationTopic, trade);
+      logger.info("Trade validation event sent: {}", trade);
+    } catch (Exception e) {
+      logger.error("Error sending trade validation event: {}", e.getMessage(), e);
     }
-    
-    public void sendTradeValidation(Trade trade) {
-        try {
-            kafkaTemplate.send(tradeValidationTopic, trade);
-            logger.info("Trade validation event sent: {}", trade);
-        } catch (Exception e) {
-            logger.error("Error sending trade validation event: {}", e.getMessage(), e);
-        }
-    }
+  }
 }

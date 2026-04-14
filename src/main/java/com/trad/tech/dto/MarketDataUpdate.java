@@ -4,9 +4,9 @@ import lombok.Data;
 
 @Data
 public class MarketDataUpdate {
-    
-    private String symbol;
-    private double price;
-    private double change;
-    private long timestamp;
+
+  private String symbol;
+  private double price;
+  private double change;
+  private long timestamp;
 }
