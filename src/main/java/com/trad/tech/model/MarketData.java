@@ -34,29 +34,4 @@ public class MarketData {
   private double peRatio;
 
   private long timestamp;
-
-  // Additional getters/setters to support service implementations
-  public void setSymbol(String symbol) {
-    this.symbol = symbol;
-  }
-
-  public void setPrice(double price) {
-    this.currentPrice = price;
-  }
-
-  public void setChange(double change) {
-    this.change = change;
-  }
-
-  public void setChangePercent(double changePercent) {
-    this.changePercentage = changePercent;
-  }
-
-  public void setVolume(long volume) {
-    this.volume = volume;
-  }
-
-  public void setTimestamp(long timestamp) {
-    this.timestamp = timestamp;
-  }
 }

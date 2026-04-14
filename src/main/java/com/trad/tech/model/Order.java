@@ -60,37 +60,4 @@ public class Order {
     REJECTED,
     PARTIALLY_FILLED
   }
-
-  // Additional getters/setters to support service implementations
-  public void setCreatedAt(LocalDateTime createdDate) {
-    this.createdDate = createdDate;
-  }
-
-  public void setExecutedDate(LocalDateTime executedDate) {
-    this.executedDate = executedDate;
-  }
-
-  public void setExecutedPrice(double executedPrice) {
-    this.executedPrice = executedPrice;
-  }
-
-  public void setExecutedQuantity(int executedQuantity) {
-    this.executedQuantity = executedQuantity;
-  }
-
-  public void setReason(String reason) {
-    this.reason = reason;
-  }
-
-  public void setStatus(OrderStatus status) {
-    this.status = status;
-  }
-
-  public void setType(OrderType orderType) {
-    this.orderType = orderType;
-  }
-
-  public void setSide(OrderSide side) {
-    this.side = side;
-  }
 }

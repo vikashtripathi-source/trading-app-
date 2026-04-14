@@ -36,7 +36,9 @@ public class PortfolioServiceImpl implements PortfolioService {
               portfolio.setTotalPnL(0.0);
               portfolio.setDailyPnL(0.0);
               portfolio.setHoldings(new ArrayList<>());
-              portfolio.setLastUpdated(System.currentTimeMillis());
+              portfolio.setLastUpdated(
+                  java.time.LocalDateTime.ofEpochSecond(
+                      System.currentTimeMillis() / 1000, 0, java.time.ZoneOffset.UTC));
 
               return portfolioRepository.save(portfolio);
             });
@@ -56,7 +58,9 @@ public class PortfolioServiceImpl implements PortfolioService {
     existingPortfolio.setTotalPnL(portfolio.getTotalPnL());
     existingPortfolio.setDailyPnL(portfolio.getDailyPnL());
     existingPortfolio.setHoldings(portfolio.getHoldings());
-    existingPortfolio.setLastUpdated(System.currentTimeMillis());
+    existingPortfolio.setLastUpdated(
+        java.time.LocalDateTime.ofEpochSecond(
+            System.currentTimeMillis() / 1000, 0, java.time.ZoneOffset.UTC));
 
     return portfolioRepository.save(existingPortfolio);
   }

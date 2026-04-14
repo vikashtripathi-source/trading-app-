@@ -27,13 +27,4 @@ public class Watchlist {
   private LocalDateTime lastUpdated;
 
   private boolean isDefault;
-
-  // Additional getters/setters to support service implementations
-  public String getUserId() {
-    return userId;
-  }
-
-  public void setUserId(String userId) {
-    this.userId = userId;
-  }
 }
