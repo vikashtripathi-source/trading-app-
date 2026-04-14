@@ -1,0 +1,3 @@
+@echo off
+echo Testing register endpoint...
+powershell -Command "$body = '{\"firstName\":\"Test\",\"lastName\":\"User\",\"email\":\"test.user@example.com\",\"password\":\"TestPass123\",\"phone\":\"+1234567890\",\"dateOfBirth\":\"1990-01-01\",\"address\":{\"street\":\"123 Test St\",\"city\":\"Test City\",\"state\":\"Test State\",\"zipCode\":\"12345\",\"country\":\"Test Country\"}}'; try { $response = Invoke-WebRequest -Uri 'http://localhost:8081/api/auth/register' -Method POST -Body $body -ContentType 'application/json' -UseBasicParsing; Write-Host 'Status:' $response.StatusCode; Write-Host 'Response:' $response.Content } catch { Write-Host 'Error:' $_.Exception.Message; Write-Host 'Status:' $_.Exception.Response.StatusCode.value__ }"

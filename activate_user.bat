@@ -1,0 +1,3 @@
+@echo off
+echo Testing user activation endpoint...
+powershell -Command "try { $response = Invoke-WebRequest -Uri 'http://localhost:8081/api/auth/activate/vikash.tripathi@example.com' -Method POST -UseBasicParsing; Write-Host 'Status:' $response.StatusCode; Write-Host 'Response:' $response.Content } catch { Write-Host 'Error:' $_.Exception.Message }"
