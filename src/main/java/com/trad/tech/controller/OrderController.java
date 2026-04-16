@@ -67,6 +67,28 @@ public class OrderController {
             responseCode = "401",
             description = "Unauthorized")
       })
+  @GetMapping("/user/current-user")
+  public ResponseEntity<ApiResponse<List<Order>>> getCurrentUserOrders(
+      @Parameter(description = "Order status filter") @RequestParam(required = false) String status,
+      @RequestHeader("Authorization") String authorization) {
+
+    System.out.println("DEBUG: getCurrentUserOrders endpoint called");
+    System.out.println("DEBUG: Authorization header: " + authorization);
+    
+    String token = authorization.replace("Bearer ", "");
+    String userId = authService.getCurrentUser(token).getId();
+    
+    System.out.println("DEBUG: Extracted userId: " + userId);
+    System.out.println("DEBUG: Status filter: " + status);
+
+    List<Order> orders = orderService.getUserOrders(userId, status);
+    System.out.println("DEBUG: Retrieved " + orders.size() + " orders");
+    
+    return ResponseEntity.ok(
+        new ApiResponse<>(
+            200, "Orders retrieved successfully", orders, "/api/orders/user/current-user"));
+  }
+
   @GetMapping("/user/{userId}")
   public ResponseEntity<ApiResponse<List<Order>>> getUserOrders(
       @Parameter(description = "User ID") @PathVariable String userId,
