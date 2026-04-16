@@ -76,7 +76,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     String email = getEmailFromToken(token);
-    return userService.findByEmail(email);
+    User user = userService.findByEmail(email);
+
+    // Debug logging
+    String userIdFromToken = getUserIdFromToken(token);
+    log.info(
+        "Token userId: {}, Database userId: {}, Email: {}", userIdFromToken, user.getId(), email);
+
+    return user;
   }
 
   @Override
@@ -130,6 +137,18 @@ public class AuthServiceImpl implements AuthService {
       return claims.getSubject();
     } catch (Exception e) {
       log.error("Error extracting email from token", e);
+      return null;
+    }
+  }
+
+  public String getUserIdFromToken(String token) {
+    try {
+      Claims claims =
+          Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token).getPayload();
+
+      return claims.get("userId", String.class);
+    } catch (Exception e) {
+      log.error("Error extracting userId from token", e);
       return null;
     }
   }

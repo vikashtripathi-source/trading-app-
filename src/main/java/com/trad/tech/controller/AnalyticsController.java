@@ -51,6 +51,11 @@ public class AnalyticsController {
     String token = authorization.replace("Bearer ", "");
     String currentUserId = authService.getCurrentUser(token).getId();
 
+    // Debug logging
+    System.out.println("DEBUG ANALYTICS: Path userId: [" + userId + "]");
+    System.out.println("DEBUG ANALYTICS: Current userId from token: [" + currentUserId + "]");
+    System.out.println("DEBUG ANALYTICS: Are they equal? " + currentUserId.equals(userId));
+
     // Ensure user can only access their own analytics
     if (!currentUserId.equals(userId)) {
       return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -66,6 +71,38 @@ public class AnalyticsController {
             "Statistics retrieved successfully",
             statistics,
             "/api/analytics/user/" + userId + "/statistics"));
+  }
+
+  @Operation(
+      summary = "Get current user trading statistics",
+      description = "Retrieves trading statistics for the currently authenticated user")
+  @ApiResponses(
+      value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "200",
+            description = "Statistics retrieved successfully"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "404",
+            description = "User not found")
+      })
+  @GetMapping("/user/current/statistics")
+  public ResponseEntity<ApiResponse<Map<String, Object>>> getCurrentUserTradingStatistics(
+      @Parameter(description = "Time period") @RequestParam(defaultValue = "1M") String period,
+      @RequestHeader("Authorization") String authorization) {
+
+    String token = authorization.replace("Bearer ", "");
+    String currentUserId = authService.getCurrentUser(token).getId();
+
+    Map<String, Object> statistics = analyticsService.getTradingStatistics(currentUserId, period);
+    return ResponseEntity.ok(
+        new ApiResponse<>(
+            200,
+            "Statistics retrieved successfully",
+            statistics,
+            "/api/analytics/user/current/statistics"));
   }
 
   @Operation(

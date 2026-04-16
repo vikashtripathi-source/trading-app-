@@ -50,6 +50,11 @@ public class PortfolioController {
     String token = authorization.replace("Bearer ", "");
     String currentUserId = authService.getCurrentUser(token).getId();
 
+    // Debug logging
+    System.out.println("DEBUG: Path userId: [" + userId + "]");
+    System.out.println("DEBUG: Current userId from token: [" + currentUserId + "]");
+    System.out.println("DEBUG: Are they equal? " + currentUserId.equals(userId));
+
     // Ensure user can only access their own portfolio
     if (!currentUserId.equals(userId)) {
       return ResponseEntity.status(org.springframework.http.HttpStatus.FORBIDDEN)
@@ -60,6 +65,34 @@ public class PortfolioController {
     return ResponseEntity.ok(
         new ApiResponse<>(
             200, "Portfolio retrieved successfully", portfolio, "/api/portfolios/user/" + userId));
+  }
+
+  @Operation(
+      summary = "Get current user portfolio",
+      description = "Retrieves the portfolio for the currently authenticated user")
+  @ApiResponses(
+      value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "200",
+            description = "Portfolio retrieved successfully"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "404",
+            description = "Portfolio not found")
+      })
+  @GetMapping("/user/current")
+  public ResponseEntity<ApiResponse<Portfolio>> getCurrentUserPortfolio(
+      @RequestHeader("Authorization") String authorization) {
+
+    String token = authorization.replace("Bearer ", "");
+    String currentUserId = authService.getCurrentUser(token).getId();
+
+    Portfolio portfolio = portfolioService.getUserPortfolio(currentUserId);
+    return ResponseEntity.ok(
+        new ApiResponse<>(
+            200, "Portfolio retrieved successfully", portfolio, "/api/portfolios/user/current"));
   }
 
   @Operation(
