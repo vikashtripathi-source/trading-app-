@@ -5,40 +5,8 @@
 // Switch to tradingdb database
 use tradingdb;
 
-// Create admin user in users collection
-db.users.insertOne({
-    "_id": "admin123",
-    "firstName": "Admin",
-    "lastName": "User",
-    "email": "admin@gmail.com",
-    "password": "$2a$10$YourHashedPasswordHere", // This will be updated by Spring Security
-    "phone": "+1234567890",
-    "dateOfBirth": "1990-01-01",
-    "address": {
-        "street": "123 Main St",
-        "city": "New York",
-        "state": "NY",
-        "zipCode": "10001",
-        "country": "USA",
-        "postalCode": "12345"
-    },
-    "preferences": {
-        "darkMode": false,
-        "language": "en",
-        "timezone": "UTC",
-        "notifications": true
-    },
-    "security": {
-        "twoFactorEnabled": false,
-        "loginAttempts": 0,
-        "lockUntil": null
-    },
-    "createdAt": new Date(),
-    "lastUpdated": new Date(),
-    "isVerified": true,
-    "isActive": true,
-    "authorities": ["ROLE_USER"]
-});
+// Note: Users will be created through the registration process
+// No hardcoded users are inserted to avoid conflicts with dynamic user data
 
 // Create indexes for better performance
 db.users.createIndex({ "email": 1 }, { unique: true });
@@ -47,8 +15,5 @@ db.users.createIndex({ "createdAt": 1 });
 
 // Verify the setup
 print("Users collection in tradingdb database created successfully!");
-print("Admin user inserted with email: admin@gmail.com");
 print("Indexes created for email, isActive, and createdAt fields");
-
-// Show the created user
-db.users.find({ email: "admin@gmail.com" }).pretty();
+print("Ready for user registration through the application");

@@ -25,42 +25,9 @@
    use trading_app
    ```
 
-3. Create admin user:
-   ```javascript
-   db.users.insertOne({
-       "_id": "admin123",
-       "firstName": "Admin",
-       "lastName": "User",
-       "email": "admin@gmail.com",
-       "password": "$2a$10$YourHashedPasswordHere",
-       "phone": "+1234567890",
-       "dateOfBirth": "1990-01-01",
-       "address": {
-           "street": "123 Main St",
-           "city": "New York",
-           "state": "NY",
-           "zipCode": "10001",
-           "country": "USA",
-           "postalCode": "12345"
-       },
-       "preferences": {
-           "darkMode": false,
-           "language": "en",
-           "timezone": "UTC",
-           "notifications": true
-       },
-       "security": {
-           "twoFactorEnabled": false,
-           "loginAttempts": 0,
-           "lockUntil": null
-       },
-       "createdAt": new Date(),
-       "lastUpdated": new Date(),
-       "isVerified": true,
-       "isActive": true,
-       "authorities": ["ROLE_USER"]
-   });
-   ```
+3. Note: Users will be created through the application registration process
+   - No hardcoded users are inserted to avoid conflicts with dynamic user data
+   - The application will handle user creation when users register
 
 4. Create indexes:
    ```javascript
@@ -118,19 +85,19 @@ After setup, verify the installation:
    show collections
    ```
 
-2. Verify admin user:
-   ```javascript
-   db.users.find({ email: "admin@gmail.com" }).pretty()
-   ```
-
-3. Check indexes:
+2. Check indexes:
    ```javascript
    db.users.getIndexes()
+   ```
+
+3. Verify database is ready:
+   ```javascript
+   db.stats()
    ```
 
 ## Important Notes
 
 - The password field will be automatically updated by Spring Security during login
 - Email field has a unique index to prevent duplicate registrations
-- The admin user can be used for testing the login functionality
+- Users will be created through the application registration process
 - All dates are stored as ISODate objects in MongoDB
