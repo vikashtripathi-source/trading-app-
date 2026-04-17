@@ -1,4 +1,4 @@
-package com.trad.tech.service.impl;
+package com.trad.tech.ServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;

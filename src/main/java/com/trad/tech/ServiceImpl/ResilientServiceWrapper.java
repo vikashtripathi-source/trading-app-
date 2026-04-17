@@ -1,4 +1,4 @@
-package com.trad.tech.service;
+package com.trad.tech.ServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.trad.tech.service.impl;
+package com.trad.tech.ServiceImpl;
 
 import com.trad.tech.exception.InvalidTradeDataException;
 import com.trad.tech.exception.TradeAlreadyDeletedException;

@@ -1,4 +1,4 @@
-package com.trad.tech.service.impl;
+package com.trad.tech.ServiceImpl;
 
 import com.trad.tech.model.User;
 import com.trad.tech.repository.UserRepository;
