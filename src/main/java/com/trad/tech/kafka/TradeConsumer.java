@@ -3,6 +3,8 @@ package com.trad.tech.kafka;
 import com.trad.tech.model.Trade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,9 @@ import org.springframework.stereotype.Service;
 public class TradeConsumer {
 
   private static final Logger logger = LoggerFactory.getLogger(TradeConsumer.class);
+  
+  @Autowired
+  private RedisTemplate<String, Object> redisTemplate;
 
   @KafkaListener(topics = "${kafka.topics.trade-events}", groupId = "trading-group")
   public void consumeTradeEvent(Trade trade) {
@@ -87,5 +92,18 @@ public class TradeConsumer {
   private void handleTradeError(Trade trade) {
     logger.error("Handling trade error: {}", trade);
     // Add your trade error handling logic here
+  }
+
+  @KafkaListener(topics = "market-data", groupId = "trading-group")
+  public void consume(String message) {
+
+    // Example: message = "AAPL:182"
+    String[] data = message.split(":");
+
+    String symbol = data[0];
+    String price = data[1];
+
+    redisTemplate.opsForValue()
+            .set("price:" + symbol, price);
   }
 }

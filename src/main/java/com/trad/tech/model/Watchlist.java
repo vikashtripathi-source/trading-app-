@@ -27,4 +27,6 @@ public class Watchlist {
   private LocalDateTime lastUpdated;
 
   private boolean isDefault;
+
+  private boolean deleted;
 }
