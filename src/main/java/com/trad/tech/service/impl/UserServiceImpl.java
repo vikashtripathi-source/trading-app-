@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-  
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
 
@@ -63,8 +62,9 @@ public class UserServiceImpl implements UserService {
   public User findById(String id) {
     log.info("Finding user by id: {}", id);
 
-    // TODO: Implement actual database retrieval
-    return findByEmail("john@example.com");
+    return userRepository
+        .findById(id)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
   }
 
   @Override
@@ -89,7 +89,6 @@ public class UserServiceImpl implements UserService {
   public User getUserProfile(String userId) {
     log.info("Getting user profile for: {}", userId);
 
-    // TODO: Implement actual database retrieval
     return findById(userId);
   }
 
