@@ -1,5 +1,6 @@
 package com.trad.tech.ServiceImpl;
 
+import com.trad.tech.service.CacheManagementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -9,7 +10,7 @@ import java.util.Set;
 
 @Service
 @Slf4j
-public class CacheManagementService {
+public class CacheManagementServiceImpl implements CacheManagementService{
 
     @Autowired(required = false)
     private RedisTemplate<String, Object> redisTemplate;
